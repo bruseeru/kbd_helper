@@ -1,0 +1,693 @@
+
+
+<form>
+    <input id="my_input" type="text" value=" ॐ ऐं औम् ह्रीं श्लीम् हूं फट्।" size="60"/>
+    <br/>
+  
+    <br/>
+    выделить с <input id="v1" type="text" style="width:30px"  value="5"/>
+     до <input id="v2" type="text" style="width:30px"  value="10" />
+    скорость
+    <select id="speec_speed">
+      <option value=0.5>0,5</option>
+      <option value=1>1</option>
+      <option value=1.5>1,5</option>
+      <option value=2> 2</option>
+    </select>
+    <input id="select_button" type="button" value="Выделить"/>
+    <input id="prev_button" type="button" value="<"/>
+    <input id="next_button" type="button" value=">"/>
+    <input id="speec_button" type="button" value="&#128264;"/>
+    
+</form> 
+  <script type="text/javascript">
+  
+  function selectFromTo( textInput, i1, i2 ) {
+    if ( typeof textInput.selectionStart != 'undefined' ) {
+        textInput.setSelectionRange(i1, i2);
+        textInput.focus();
+    } else if ( textInput.createTextRange) {
+        var range = textInput.createTextRange();
+        range.moveStart('character', i1);
+        range.moveEnd('character', i2);
+        range.select();
+    } else {
+        alert( "I can't do this!" );
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+         textInput = document.getElementById( 'my_input' );
+         var select_button = document.getElementById( 'select_button' ),
+         next_button = document.getElementById('next_button'),
+         prev_button = document.getElementById('prev_button'),
+         speec_button = document.getElementById('speec_button'),
+         speec_speed = document.getElementById('speec_speed'),
+         v1 = document.getElementById( 'v1' ),
+         v2 = document.getElementById( 'v2' ),
+         kbd_lang = Array("sa(kagapa)",
+                Array("'","1","2","3","4","5","6","7","8","9","0","-","=",
+                                             "ट","ड","ॆ","र","त","य","ु","ि","ॊ","प","[","]","\\",
+                                             "ा","स","द","्","ग","ह","ज","क","ल",";","'",
+                                            "ञ","ष","च","व","ब","न","म",",",".","/"),    //простая
+                Array("~","!","@","#","$","%","^","&","*","(",")","_","+",
+                                            "ठ","ढ","े","ृ","थ","ै","ू","ी","ो","फ","{","}","|",
+                                            "आ","श","ध","ॄ","घ","ः","झ","ख","ळ",":",'"',
+                                            "ङ","़","छ","ौ","भ","ण","ं","<",">","?"), //shift
+                Array("'","1","2","3","4","5","6","7","8","9","0","-","=",
+                                            "ट","ड","ॆ","र","त","य","ु","ि","ॊ","प","[","]","\\",
+                                             "ा","स","द","्","ग","ह","ज","क","ल",";","'",
+                                                "ञ","ष","च","व","ब","न","म",",",".","/"), //caps
+                Array('“','१','२','३','४','५','६','७','८','९','०','॒','',
+                                                        'ड़','ऎ','ऋ','','','ऐ','उ','इ','ऒ','फ़','','','।',
+                                                        'अ','','','ॠ','ग़','ᳵ','ज़','क़','ॢ','ᳲ','॑',
+                                                        '','ऴ','','औ','','ऩ','ऽ','ॅ','ॉ','' ) , //alt
+                Array('','','₨','','₹','','‌','‍','ँ','','॰','','',
+                                                 '','ढ़','ए','ऱ','','य़','ऊ','ई','ओ','','','','॥',
+                                                 'ॲ','','','','','ᳶ','','ख़','ऌ','ᳳ','”',
+                   '','','','','','',String.fromCharCode(2384),'ऍ','ऑ','')  //alt+shift
+            );
+    textInput.addEventListener('select', function (e) {
+       var el = e.target;
+       if(el.selectionStart < el.selectionEnd){
+         v1.value = el.selectionStart;
+         v2.value = el.selectionEnd;
+       }else{
+         v2.value = el.selectionStart;
+         v1.value = el.selectionEnd;
+       }
+      // selectFromTo( textInput, v1.value, v2.value ) ;
+         //alert(textInput.value.slice(v1.value, v2.value));
+      // alert('selection: ' + sel);
+      });
+    speec_button.addEventListener('click', function() {
+         selectFromTo( textInput, v1.value, v2.value );
+         
+         
+           
+         var myRate = new SpeechSynthesisUtterance(textInput.value.slice(v1.value, v2.value));
+         myRate.rate=speec_speed.value;
+         speechSynthesis.speak(myRate
+         );
+    });
+    select_button.addEventListener('click', function() {
+        if(Number(v1.value) >= Number(v2.value)){v2.value = String(Number(v1.value) +1)};;
+        selectFromTo( textInput, v1.value, v2.value ); //alert(textInput.value[v1.value]+" "+textInput.value.charCodeAt(v1.value));                  
+                jQuery("#kbd_shiftR").css({'background':'#000'}); 
+                jQuery("#kbd_shiftL").css({'background':'#000'}); 
+                jQuery("#kbd_altR").css({'background':'#000'}); 
+        var i1 = jQuery.inArray(textInput.value[v1.value], kbd_lang[1]);
+        if(i1<0){ i1 = jQuery.inArray(textInput.value[v1.value], kbd_lang[2]);                    
+                jQuery("#kbd_shiftR").css({'background':'#0F0'}); 
+                jQuery("#kbd_shiftL").css({'background':'#0F0'}); 
+        }
+        if(i1<0) i1 = jQuery.inArray(textInput.value[v1.value], kbd_lang[3]);        
+        if(i1<0){ i1 = jQuery.inArray(textInput.value[v1.value], kbd_lang[4]);
+                jQuery("#kbd_altR").css({'background':'#0f0'}); 
+        }
+        if(i1<0){ i1 = jQuery.inArray(textInput.value[v1.value], kbd_lang[5]);
+                jQuery("#kbd_altR").css({'background':'#0f0'});                  
+                jQuery("#kbd_shiftR").css({'background':'#0F0'}); 
+                jQuery("#kbd_shiftL").css({'background':'#0F0'}); 
+        }
+       if(textInput.value[v1.value] ==" "){i1=1000;kbd_id[i1]= "#kbd_spase";
+            jQuery("#kbd_shiftR").css({'background':'#000'}); 
+                jQuery("#kbd_shiftL").css({'background':'#000'}); 
+                jQuery("#kbd_altR").css({'background':'#000'}); 
+       }
+    
+    
+    let i = 0;
+                while (i < kbd_id.length) { 
+                  
+                   jQuery(kbd_id[i]).css({'background':'#000'}); 
+                  
+                  i++;
+                }           
+       
+     jQuery(kbd_id[i1]).css({'background':'#0f0'}); 
+        
+        jQuery("#kbd_spase").html(textInput.value[v1.value]+ ' '+jQuery.inArray(textInput.value[v1.value], kbd_lang[1])+' '+kbd_id[i1]);
+    }); 
+    next_button.addEventListener('click', function() {//alert(textInput.value.length);
+      if(Number(v1.value) < textInput.value.length -1){v1.value = String(Number(v1.value) +1)}; 
+      if(Number(v1.value) >= Number(v2.value)){v2.value = String(Number(v1.value) +1)};;
+      jQuery( "#select_button").trigger('click');
+    }); 
+    prev_button.addEventListener('click', function() {
+       if(Number(v1.value) > 0 ){v1.value = String(Number(v1.value) -1)}; jQuery( "#select_button").trigger('click');
+    }); 
+});
+  
+  
+//var input = document.getElementById('input');
+//var result = document.getElementById('result');
+
+//input.onkeypress = func;
+
+/* jQuery( "#input").change(function(e) {
+   jQuery( "#input").select();
+    alert(jQuery( "#input")[0].selectionStart);
+     jQuery( "#input")[0].selectionStart=2;
+     jQuery( "#input")[0].selectionEnd=5; 
+     jQuery( "#input").select();
+ });
+ */
+
+ 
+//function func(event) {
+//	code = event.key
+//	key = event.code;
+//	result.innerHTML = 'Код: '+code + ', клавиша' + key;
+//}
+
+
+  </script>
+
+
+
+
+
+
+<div id="kbd" style="position:relative;width:912px;height:302px;font-size:18px;border:1px solid #333;background:#000;overflow:hidden">
+  <style type="text/css">
+    .kbd{
+       border:1px solid #333;text-align: center;position:absolute;width:40px;height:40px;line-height:40px;
+    }
+  </style>
+  <div id="kbd_esc" class="kbd" style=" left:0px; top:0px;">Esc
+  </div>
+  <div id="kbd_f1" class="kbd" style="left:70px; top:0px;">F1
+  </div>
+  <div id="kbd_f2" class="kbd" style="left:110px; top:0px;">F2
+  </div>
+  <div id="kbd_f3" class="kbd" style="left:150px; top:0px;">F3
+  </div>
+  <div id="kbd_f4" class="kbd" style="left:190px; top:0px;">F4
+  </div>
+  <div id="kbd_f5" class="kbd" style="left:255px; top:0px;">F5
+  </div>
+  <div id="kbd_f6" class="kbd" style="left:295px; top:0px;">F6
+  </div>
+  <div id="kbd_f7" class="kbd" style="left:335px; top:0px;">F7
+  </div>
+  <div id="kbd_f8" class="kbd" style="left:375px; top:0px;">F8
+  </div>
+  <div id="kbd_f9" class="kbd" style="left:440px; top:0px;">F9
+  </div>
+  <div id="kbd_f10" class="kbd" style="left:480px; top:0px;">F10
+  </div>
+  <div id="kbd_f11" class="kbd" style="left:520px; top:0px;">F11
+  </div>
+  <div id="kbd_f12" class="kbd" style="left:560px; top:0px;">F12
+  </div>
+
+
+  <div id="kbd_tilde" class="kbd" style="left:0px; top:60px;">`
+  </div>
+  <div id="kbd_1" class="kbd" style="left:40px; top:60px;">1
+  </div>
+  <div id="kbd_2" class="kbd" style="left:80px; top:60px;">2
+  </div>
+  <div id="kbd_3" class="kbd" style="left:120px; top:60px;">3
+  </div>
+  <div id="kbd_4" class="kbd" style="left:160px; top:60px;">4
+  </div>
+  <div id="kbd_5" class="kbd" style="left:200px; top:60px;">5
+  </div>
+  <div id="kbd_6" class="kbd" style="left:240px; top:60px;">6
+  </div>
+  <div id="kbd_7" class="kbd" style="left:280px; top:60px;">7
+  </div>
+  <div id="kbd_8" class="kbd" style="left:320px; top:60px;">8
+  </div>
+  <div id="kbd_9" class="kbd" style="left:360px; top:60px;">9
+  </div>
+  <div id="kbd_0" class="kbd" style="left:400px; top:60px;">0
+  </div>
+  <div id="kbd_minus" class="kbd" style="left:440px; top:60px;">-
+  </div>
+  <div id="kbd_equal" class="kbd" style="left:480px; top:60px;">=
+  </div>
+  <div id="kbd_back" class="kbd" style="left:520px; top:60px;width:80px;font-size:12px;">Backspace
+  </div>
+
+  <div id="kbd_tab" class="kbd" style="left:0px; top:100px;width:60px;">tab
+  </div>
+  <div id="kbd_q" class="kbd" style="left:60px; top:100px;">q
+  </div>
+  <div id="kbd_w" class="kbd" style="left:100px; top:100px;">w
+  </div>
+  <div id="kbd_e" class="kbd" style="left:140px; top:100px;">e
+  </div>
+  <div id="kbd_r" class="kbd" style="left:180px; top:100px;">r
+  </div>
+  <div id="kbd_t" class="kbd" style="left:220px; top:100px;">t
+  </div>
+  <div id="kbd_y" class="kbd" style="left:260px; top:100px;">y
+  </div>
+  <div id="kbd_u" class="kbd" style="left:300px; top:100px;">u
+  </div>
+  <div id="kbd_i" class="kbd" style="left:340px; top:100px;">i
+  </div>
+  <div id="kbd_o" class="kbd" style="left:380px; top:100px;">o
+  </div>
+  <div id="kbd_p" class="kbd" style="left:420px; top:100px;">p
+  </div>
+  <div id="kbd_bracketO" class="kbd" style="left:460px; top:100px;">[
+  </div>
+  <div id="kbd_bracketC" class="kbd" style="left:500px; top:100px;">]
+  </div>
+  <div id="kbd_bslash" class="kbd" style="left:540px; top:100px;width:60px;">\
+  </div>
+
+  <div id="kbd_caps" class="kbd" style="left:0px; top:140px;width:70px;font-size:12px">Caps Lock
+  </div>
+  <div id="kbd_a" class="kbd" style="left:70px; top:140px;">a
+  </div>
+  <div id="kbd_s" class="kbd" style="left:110px; top:140px;">s
+  </div>
+  <div id="kbd_d" class="kbd" style="left:150px; top:140px;">d
+  </div>
+  <div id="kbd_f" class="kbd" style="left:190px; top:140px;">f
+  </div>
+  <div id="kbd_g" class="kbd" style="left:230px; top:140px;">g
+  </div>
+  <div id="kbd_h" class="kbd" style="left:270px; top:140px;">h
+  </div>
+  <div id="kbd_j" class="kbd" style="left:310px; top:140px;">j
+  </div>
+  <div id="kbd_k" class="kbd" style="left:350px; top:140px;">k
+  </div>
+  <div id="kbd_l" class="kbd" style="left:390px; top:140px;">l
+  </div>
+  <div id="kbd_sem" class="kbd" style="left:430px; top:140px;">;
+  </div>
+  <div id="kbd_quot" class="kbd" style="left:470px; top:140px;">'
+  </div>
+  <div id="kbd_enter" class="kbd" style="left:510px; top:140px;width:90px;">Enter
+  </div>
+
+  <div id="kbd_shiftL"class="kbd"  style="left:0px; top:180px;width:90px;">Shift
+  </div>
+  <div id="kbd_z" class="kbd" style="left:90px; top:180px;">z
+  </div>
+  <div id="kbd_x" class="kbd" style="left:130px; top:180px;">x
+  </div>
+  <div id="kbd_c" class="kbd" style="left:170px; top:180px;">c
+  </div>
+  <div id="kbd_v" class="kbd" style="left:210px; top:180px;">v
+  </div>
+  <div id="kbd_b" class="kbd" style="left:250px; top:180px;">b
+  </div>
+  <div id="kbd_n" class="kbd" style="left:290px; top:180px;">n
+  </div>
+  <div id="kbd_m" class="kbd" style="left:330px; top:180px;">m
+  </div>
+  <div id="kbd_comma" class="kbd" style="left:370px; top:180px;">,
+  </div>
+  <div id="kbd_point" class="kbd" style="left:410px; top:180px;">.
+  </div>
+  <div id="kbd_slash" class="kbd" style="left:450px; top:180px;">/
+  </div>
+  <div id="kbd_shiftR" class="kbd" style="left:490px; top:180px;width:110px;">Shift
+  </div>
+
+  <div id="kbd_ctrlL" class="kbd" style="left:0px; top:220px;width:50px;">Ctrl
+  </div>
+  <div id="kbd_winL" class="kbd" style="left:50px; top:220px;width:50px;">Win
+  </div>
+  <div id="kbd_altL" class="kbd" style="left:100px; top:220px;width:50px;">Alt
+  </div>
+  <div id="kbd_spase" class="kbd" style="left:150px; top:220px;width:250px;">&nbsp;
+  </div>
+  <div id="kbd_altR" class="kbd" style="left:400px; top:220px;width:50px;">Alt
+  </div>
+  <div id="kbd_winR" class="kbd" style="left:450px; top:220px;width:50px;">Win
+  </div>
+  <div id="kbd_menu" class="kbd" style="left:500px; top:220px;width:50px;">Menu
+  </div>
+  <div id="kbd_ctrlR" class="kbd" style="left:550px; top:220px;width:50px;">Ctrl
+  </div>
+
+
+
+
+
+
+
+  <div id="kbd_print" class="kbd" style="left:615px; top:0px;font-size:12px;line-height:20px">Print Scrn
+  </div>
+  <div id="kbd_scrol" class="kbd" style="left:655px; top:0px;font-size:12px;line-height:20px">Scroll Lock
+  </div>
+  <div id="kbd_pause" class="kbd" style="left:695px; top:0px;font-size:12px;">Pause
+  </div>
+
+
+  <div id="kbd_ins" class="kbd" style="left:615px; top:60px;font-size:12px;">Insert
+  </div>
+  <div id="kbd_home" class="kbd" style="left:655px; top:60px;font-size:12px;">Home
+  </div>
+  <div id="kbd_pageUp" class="kbd" style="left:695px; top:60px;font-size:12px;line-height:20px">Page Up
+  </div>
+  <div id="kbd_del" class="kbd" style="left:615px; top:100px;font-size:12px;">Delete
+  </div>
+  <div id="kbd_end" class="kbd" style="left:655px; top:100px;font-size:12px;">End
+  </div>
+  <div id="kbd_pageDown" class="kbd" style="left:695px; top:100px;font-size:12px;line-height:20px">Page Down
+  </div>
+
+
+  <div id="kbd_up" class="kbd" style="left:655px; top:180px;font-size:12px;">Up
+  </div>
+  <div id="kbd_left" class="kbd" style="left:615px; top:220px;font-size:12px;">Left
+  </div>
+  <div id="kbd_down" class="kbd" style="left:655px; top:220px;font-size:12px;">Down
+  </div>
+  <div id="kbd_right" class="kbd" style="left:695px; top:220px;font-size:12px;">Right
+  </div>
+
+
+  <div id="kbd_num_lock" class="kbd" style="left:750px;top:60px;font-size:12px;line-height:20px">Num Lock
+  </div>
+  <div id="kbd_num_slash" class="kbd" style="left:790px;top:60px;">/
+  </div>
+  <div id="kbd_num_aster" class="kbd" style="left:830px;top:60px;">*
+  </div>
+  <div id="kbd_num_minus" class="kbd" style="left:870px;top:60px;">-
+  </div>
+  <div id="kbd_num_7" class="kbd" style="left:750px;top:100px;">7
+  </div>
+  <div id="kbd_num_8" class="kbd" style="left:790px;top:100px;">8
+  </div>
+  <div id="kbd_num_9" class="kbd" style="left:830px;top:100px;">9
+  </div>
+  <div id="kbd_num_plus" class="kbd" style="left:870px;top:100px;height:80px;line-height:80px">+
+  </div>
+  <div id="kbd_num_4" class="kbd" style="left:750px;top:140px;">4
+  </div>
+  <div id="kbd_num_5" class="kbd" style="left:790px;top:140px;">5
+  </div>
+  <div id="kbd_num_6" class="kbd" style="left:830px;top:140px;">6
+  </div>
+  <div id="kbd_num_1" class="kbd" style="left:750px;top:180px;">1
+  </div>
+  <div id="kbd_num_2" class="kbd" style="left:790px;top:180px;">2
+  </div>
+  <div id="kbd_num_3" class="kbd" style="left:830px;top:180px;">3
+  </div>
+  <div id="kbd_num_enter" class="kbd" style="left:870px; top:180px;height:80px;font-size:12px;line-height:80px">Enter
+  </div>
+  <div id="kbd_num_0" class="kbd" style="left:750px;top:220px;width:80px;">0
+  </div>
+  <div id="kbd_num_point" class="kbd" style="left:830px;top:220px;">.
+  </div>
+
+
+  <div id="kbdInd_num" class="kbd" style="left:757px; top:5px;width:39px;height:31px;font-size:12px;line-height:14px;background:#0f0; ">Num Lock
+  </div>
+  <div id="kbdInd_caps" class="kbd" style="left:810px; top:5px;width:39px;height:31px;font-size:12px;line-height:14px">Caps Lock
+  </div>
+  <div id="kbdInd_scrl" class="kbd" style="left:863px; top:5px;width:39px;height:31px;font-size:12px;line-height:14px">Scroll Lock
+  </div>
+  <div>
+    <select class="kbd" style="left:0px; top:265px;width:140px;height:31px;font-size:12px;line-height:14px" size="1" id="lang" name="lang">
+    <option disabled>Раскладка</option>
+      <option value="ru" >Русская</option>
+      <option selected value="en" >Английская</option>
+      <option value="kagapa" >Санскритическая (KaGaPa)</option>
+    </select>
+    <select class="kbd" style="left:150px; top:265px;width:80px;height:31px;font-size:12px;line-height:14px" size="1" id="formkbd" name="formkbd">
+      <option disabled>Формат (кол-во клавиш)</option>
+      <option selected value="104">104</option>
+      <option value="87">87</option>
+      <option value="74">74</option>
+    </select>
+    <input type="checkbox" name="doubleclick" id="doubleclick" title="залипание shift" value="0" class="kbd" style="left:0px; top:180px;width:18px;height:18px">
+  </div>
+  <script type="text/javascript">
+    <!--
+    jQuery( document ).ready(function() {
+      var kbd_flags = Array("0","0","0","0","0"); // (kbdInd_caps, kbd_num_lock, kbdInd_scrl, shift,alt_r)
+       kbd_id = Array("#kbd_tilde","#kbd_1","#kbd_2","#kbd_3","#kbd_4","#kbd_5","#kbd_6","#kbd_7","#kbd_8","#kbd_9",
+                               "#kbd_0","#kbd_minus","#kbd_equal",
+                         "#kbd_q","#kbd_w","#kbd_e","#kbd_r","#kbd_t","#kbd_y","#kbd_u","#kbd_i","#kbd_o",
+                               "#kbd_p","#kbd_bracketO","#kbd_bracketC","#kbd_bslash",
+                         "#kbd_a","#kbd_s","#kbd_d","#kbd_f","#kbd_g","#kbd_h","#kbd_j","#kbd_k","#kbd_l",
+                               "#kbd_sem","#kbd_quot",
+                         "#kbd_z","#kbd_x","#kbd_c","#kbd_v","#kbd_b","#kbd_n","#kbd_m","#kbd_comma",
+                               "#kbd_point","#kbd_slash"); 
+      var kbd_lang = Array("en",
+        Array("`","1","2","3","4","5","6","7","8","9","0","-","=",
+              "q","w","e","r","t","y","u","i","o","p","[","]","\\",
+              "a","s","d","f","g","h","j","k","l",";","'",
+              "z","x","c","v","b","n","m",",",".","/"),    //простая
+        Array("~","!","@","#","$","%","^","&","*","(",")","_","+",
+            "Q","W","E","R","T","Y","U","I","O","P","{","}","|",
+            "A","S","D","F","G","H","J","K","L",":",'"',
+            "Z","X","C","V","B","N","M","<",">","?"), //shift
+        Array("`","1","2","3","4","5","6","7","8","9","0","-","=",
+            "Q","W","E","R","T","Y","U","I","O","P","[","]","\\",
+            "A","S","D","F","G","H","J","K","L",";","'",
+            "Z","X","C","V","B","N","M",",",".","/") , //caps
+        Array() , //alt
+        Array()  //alt+shift
+      );
+      var kbd_nums = Array( Array("7","8","9","4","5","6","1","2","3","0","."),
+                            Array("Home","Up","Pg Up","Left","Begin","Right","End","Down","Pg Dn","Ins","Del"));
+      function kbd_select_lang(lang){
+        switch(lang){
+        case "en":
+          kbd_lang = ["en",
+                ["`","1","2","3","4","5","6","7","8","9","0","-","=",
+                      "q","w","e","r","t","y","u","i","o","p","[","]","\\",
+                      "a","s","d","f","g","h","j","k","l",";","'",
+                      "z","x","c","v","b","n","m",",",".","/"],    //простая
+                ["~","!","@","#","$","%","^","&","*","(",")","_","+",
+                      "Q","W","E","R","T","Y","U","I","O","P","{","}","|",
+                      "A","S","D","F","G","H","J","K","L",":",'"',
+                      "Z","X","C","V","B","N","M","<",">","?"], //shift
+                ["`","1","2","3","4","5","6","7","8","9","0","-","=",
+                      "Q","W","E","R","T","Y","U","I","O","P","[","]","\\",
+                      "A","S","D","F","G","H","J","K","L",";","'",
+                      "Z","X","C","V","B","N","M",",",".","/"] , //caps
+                [] , //alt
+                []  //alt+shift
+            ]
+        break;
+        case "ru":
+          kbd_lang[0] = "ru";
+        break;
+        case "kagapa":
+          kbd_lang = ["sa(kagapa)",
+                ["'","1","2","3","4","5","6","7","8","9","0","-","=",
+                                             "ट","ड","ॆ","र","त","य","ु","ि","ॊ","प","[","]","\\",
+                                             "ा","स","द","्","ग","ह","ज","क","ल",";","'",
+                                            "ञ","ष","च","व","ब","न","म",",",".","/"],    //простая
+                ["~","!","@","#","$","%","^","&","*","(",")","_","+",
+                                            "ठ","ढ","े","ृ","थ","ै","ू","ी","ो","फ","{","}","|",
+                                            "आ","श","ध","ॄ","घ","ः","झ","ख","ळ",":",'"',
+                                            "ङ","़","छ","ौ","भ","ण","ं","<",">","?"], //shift
+                ["'","1","2","3","4","5","6","7","8","9","0","-","=",
+                                            "ट","ड","ॆ","र","त","य","ु","ि","ॊ","प","[","]","\\",
+                                             "ा","स","द","्","ग","ह","ज","क","ल",";","'",
+                                                "ञ","ष","च","व","ब","न","म",",",".","/"] , //caps
+                                         ['“','१','२','३','४','५','६','७','८','९','०','॒','',
+                  ] , //alt
+                []  //alt+shift
+            ];
+            kbd_lang[5][2]="₨"; kbd_lang[5][4]= "₹";
+        break;
+        }
+         let i = 0;
+                while (i < 47) { 
+                  if( kbd_lang[1][i].length !=0 ) {
+                    jQuery(kbd_id[i]).html(kbd_lang[1][i] );
+                  }
+                  i++;
+                }        
+                jQuery("#kbdInd_caps").css({'background':'#000'}); 
+                kbd_flags[0] = "0"
+        jQuery("#kbd_spase").html(kbd_lang[0]);
+      };
+      
+      kbd_select_lang("en");
+      
+      jQuery(".kbd").mousedown(function() {
+        jQuery("#kbd_spase").html(jQuery.inArray("#" + this.id, kbd_id) + " " + this.id + " " + kbd_lang[1][jQuery.inArray("#" + this.id, kbd_id)]);
+        
+        switch(this.id){
+          case "kbd_shiftR": 
+          case "kbd_shiftL": 
+            if( kbd_lang[2].length !=0 ){
+                let i = 0;
+                while (i < 47) { 
+                  if( kbd_lang[2][i].length !=0 ) {
+                    jQuery(kbd_id[i]).html(kbd_lang[2][i] );
+                  }
+                  i++;
+                }                
+                jQuery("#kbd_shiftR").css({'background':'#0F0'}); 
+                jQuery("#kbd_shiftL").css({'background':'#0F0'});       
+            }else{};  
+          break;
+          case "kbd_altR": 
+            if( kbd_lang[4].length !=0 ){
+                let i = 0;
+                while (i < 47) { 
+                  if( kbd_lang[2][i].length !=0 ) {
+                    jQuery(kbd_id[i]).html(kbd_lang[4][i] );
+                  }
+                  i++;
+                }   ;                  
+            }else{}; 
+                jQuery("#kbd_altR").css({'background':'#0f0'}); 
+          break;
+          case "kbd_altL":
+                jQuery("#kbd_altL").css({'background':'#0f0'});  
+          break; 
+        }  
+      });
+      jQuery(".kbd").mouseup(function() {
+        jQuery("#kbd_spase").html("&nbsp;");
+        switch(this.id){
+          case "kbd_altR": 
+            var lng_m = 5;
+            if(kbd_flags[0]=="0"){lng_m=1};
+            if(jQuery("#doubleclick").is(':checked') && kbd_flags[4]=="0"){kbd_flags[4]="1";}else{ kbd_flags[4]="0";};
+            if(kbd_lang[2].length !=0 && kbd_flags[4]=="0"){
+                let i = 0;
+                while (i < 47) { 
+                  if( kbd_lang[lng_m][i].length !=0 ) {
+                    jQuery(kbd_id[i]).html(kbd_lang[lng_m][i] );
+                  }
+                  i++;
+                }                
+                jQuery("#kbd_altR").css({'background':'#000'});      
+            }else{}; 
+          break;
+          case "kbd_altL":
+                jQuery("#kbd_altL").css({'background':'#000'});  
+            alert("ygj");
+          break; 
+          case "kbd_shiftR": 
+          case "kbd_shiftL":
+            var lng_m = 3;
+            if(kbd_flags[0]=="0"){lng_m=1};
+            if(jQuery("#doubleclick").is(':checked') && kbd_flags[3]=="0"){kbd_flags[3]="1";}else{ kbd_flags[3]="0";};
+            if(kbd_lang[2].length !=0 && kbd_flags[3]=="0"){
+                let i = 0;
+                while (i < 47) { 
+                  if( kbd_lang[lng_m][i].length !=0 ) {
+                    jQuery(kbd_id[i]).html(kbd_lang[lng_m][i] );
+                  }
+                  i++;
+                }                
+                jQuery("#kbd_shiftR").css({'background':'#000'}); 
+                jQuery("#kbd_shiftL").css({'background':'#000'});       
+            }else{};    
+              
+          break;
+          case "kbd_caps": 
+             if(kbd_flags[0]=="0"){ 
+                let i = 0;
+                while (i < 47) { 
+                  if( kbd_lang[3][i].length !=0 ) {
+                    jQuery(kbd_id[i]).html(kbd_lang[3][i] );
+                  }
+                  i++;
+                }           
+                jQuery("#kbdInd_caps").css({'background':'#0f0'}); 
+                kbd_flags[0] = "1";}
+               else{
+                let i = 0;
+                while (i < 47) { 
+                  if( kbd_lang[1][i].length !=0 ) {
+                    jQuery(kbd_id[i]).html(kbd_lang[1][i] );
+                  }
+                  i++;
+                }        
+                jQuery("#kbdInd_caps").css({'background':'#000'}); 
+                kbd_flags[0] = "0"}; 
+          break;
+          case "kbd_scrol":  
+             if(kbd_flags[2]=="0"){ jQuery("#kbdInd_scrl" ).css({'background':'#0f0'}); kbd_flags[2] = "1";}
+               else{ jQuery("#kbdInd_scrl" ).css({'background':'#000'}); kbd_flags[2] = "0"}; 
+          break;
+          case "kbd_num_lock": 
+             if(kbd_flags[1]=="0"){ 
+               jQuery("#kbd_num_7").html(kbd_nums[1][0]).css({'font-size':'12px'});
+               jQuery("#kbd_num_8").html(kbd_nums[1][1]).css({'font-size':'12px'}); 
+               jQuery("#kbd_num_9").html(kbd_nums[1][2]).css({'font-size':'12px'});
+               jQuery("#kbd_num_4").html(kbd_nums[1][3]).css({'font-size':'12px'});
+               jQuery("#kbd_num_5").html(kbd_nums[1][4]).css({'font-size':'12px'}); 
+               jQuery("#kbd_num_6").html(kbd_nums[1][5]).css({'font-size':'12px'});
+               jQuery("#kbd_num_1").html(kbd_nums[1][6]).css({'font-size':'12px'});
+               jQuery("#kbd_num_2").html(kbd_nums[1][7]).css({'font-size':'12px'}); 
+               jQuery("#kbd_num_3").html(kbd_nums[1][8]).css({'font-size':'12px'});
+               jQuery("#kbd_num_0").html(kbd_nums[1][9]).css({'font-size':'12px'});
+               jQuery("#kbd_num_point").html(kbd_nums[1][10]).css({'font-size':'12px'});  
+               jQuery("#kbdInd_num").css({'background':'#000'});              
+               kbd_flags[1] = "1";}
+               else{jQuery("#kbdInd_caps").css({'background':'#000'}); 
+               jQuery("#kbd_num_7").html(kbd_nums[0][0]).css({'font-size':'18px'});
+               jQuery("#kbd_num_8").html(kbd_nums[0][1]).css({'font-size':'18px'}); 
+               jQuery("#kbd_num_9").html(kbd_nums[0][2]).css({'font-size':'18px'});
+               jQuery("#kbd_num_4").html(kbd_nums[0][3]).css({'font-size':'18px'});
+               jQuery("#kbd_num_5").html(kbd_nums[0][4]).css({'font-size':'18px'}); 
+               jQuery("#kbd_num_6").html(kbd_nums[0][5]).css({'font-size':'18px'});
+               jQuery("#kbd_num_1").html(kbd_nums[0][6]).css({'font-size':'18px'});
+               jQuery("#kbd_num_2").html(kbd_nums[0][7]).css({'font-size':'18px'}); 
+               jQuery("#kbd_num_3").html(kbd_nums[0][8]).css({'font-size':'18px'});
+               jQuery("#kbd_num_0").html(kbd_nums[0][9]).css({'font-size':'18px'});
+               jQuery("#kbd_num_point").html(kbd_nums[0][10]).css({'font-size':'18px'});  
+               jQuery("#kbdInd_num").css({'background':'#0f0'}); 
+               kbd_flags[1] = "0"}; 
+          break;
+        }
+      });
+
+      jQuery("#formkbd").change(function() {
+        var val =jQuery(this).val();
+        switch(val){
+          case "104": jQuery("#kbd").css({'width':'912px'}); 
+            jQuery("#kbdInd_num").css({'left':'757px', 'top':'5px','width':'39px','height':'31px'}); 
+            jQuery("#kbdInd_caps").css({'left':'810px', 'top':'5px','width':'39px','height':'31px'}); 
+            jQuery("#kbdInd_scrl" ).css({'left':'863px', 'top':'5px','width':'39px','height':'31px'});
+          break;
+          case "87": 
+            jQuery("#kbdInd_num").css({'left':'350px', 'top':'273px','width':'78px','height':'16px'}); 
+            jQuery("#kbdInd_caps").css({'left':'434px', 'top':'273px','width':'78px','height':'16px'}); 
+            jQuery("#kbdInd_scrl" ).css({'left':'518px', 'top':'273px','width':'78px','height':'16px'});
+            jQuery("#kbd").css({'width':'737px'});
+          break;
+          case "74": jQuery("#kbd").css({'width':'602px'});
+            jQuery("#kbdInd_num").css({'left':'350px', 'top':'273px','width':'78px','height':'16px'}); 
+            jQuery("#kbdInd_caps").css({'left':'434px', 'top':'273px','width':'78px','height':'16px'}); 
+            jQuery("#kbdInd_scrl" ).css({'left':'518px', 'top':'273px','width':'78px','height':'16px'});
+          break;
+        }
+      });
+      jQuery("#lang").change(function() {
+        var val =jQuery(this).val();
+        switch(val){
+          case "ru": 
+            kbd_select_lang("ru");
+          break;
+          case "en": 
+            kbd_select_lang("en");
+          break;
+          case "kagapa": 
+            kbd_select_lang("kagapa");
+          break;
+        }
+      });
+      jQuery("#lang").val("en").change();
+      jQuery("#formkbd").val("74").change();
+      jQuery("#doubleclick").attr('checked',true);
+    });
+    -->
+  </script>
+</div>
+
+
+
